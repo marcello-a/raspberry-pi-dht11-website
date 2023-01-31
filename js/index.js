@@ -18,7 +18,11 @@ function getFormatedDate(date) {
     return date.toLocaleDateString("de-DE", options);
 }
 
-function makeTooltip(data, x, y, svg) {
+function getFormatedTime(date) {        
+    return date.toLocaleTimeString("de-DE");
+}
+
+function makeTooltip(data, x, y, svg, temperature = true) {
 
     // Circle size is size to 
     const circleSize = 1.5;
@@ -27,7 +31,8 @@ function makeTooltip(data, x, y, svg) {
     const circleColor = "#FFFFFF"
 
     function getTooltipHTML(d) {
-        return getFormatedDate(d.date) + "<br/> Temperature: " + d.temperature + "°";
+        const temp_or_humi = temperature ? "<br> Temperature: " + d.temperature + "°" : "<br> Humidity: " + d.humidity + "%";
+        return getFormatedDate(d.date) + "<br/>" + getFormatedTime(d.date) + temp_or_humi;
     }
 
     const circleShown = svg.selectAll("dot")
@@ -39,7 +44,7 @@ function makeTooltip(data, x, y, svg) {
             return x(d.date);
         })
         .attr("cy", function (d) {
-            return y(d.temperature);
+            return y(temperature ? d.temperature: d.humidity);
         })
         .attr("fill", circleColor);
 
@@ -53,7 +58,7 @@ function makeTooltip(data, x, y, svg) {
             return x(d.date);
         })
         .attr("cy", function (d) {
-            return y(d.temperature);
+            return y(temperature ? d.temperature: d.humidity);
         })
         .style("opacity", 0)
         .on('mouseover', function (event, d) {
@@ -146,7 +151,8 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
             .attr("d", line);
     
     
-        makeTooltip(data, x, y, svg);
+            console.log(data, x, y);
+        makeTooltip(data, x, y, svg, false);
 
         drawGraph(x, y, svg, data);
     }
