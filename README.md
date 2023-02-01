@@ -1,4 +1,4 @@
-# Website for Raspberry Pi temperature and humidity (D3.js)
+# Website (D3.js) for Raspberry Pi temperature and humidity (DHT11)
 
 
 
