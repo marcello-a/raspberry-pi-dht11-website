@@ -1,12 +1,19 @@
 const data_file_path = './_collected_data.csv';
 
+// axis fontsize
+const Y_LABEL_FONT_SIZE = "24px";
+const X_LABEL_FONT_SIZE = "12px";
 
-// labels
-const x_label = "Time";
-const y_label = "Temperature";
-const location_name = "Home";
+// set the dimensions and margins of the graph
+var margin = { top: 20, right: 20, bottom: 30, left: 50 },
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
-var div = d3.select("body").append("div")
+
+// Create
+var div = d3
+    .select("body")
+    .append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
 
@@ -14,20 +21,32 @@ var div = d3.select("body").append("div")
 
 function getFormatedDate(date) {
     var options = { year: 'numeric', month: 'long', day: 'numeric' };
-    
+
     return date.toLocaleDateString("de-DE", options);
 }
 
-function getFormatedTime(date) {        
+function getFormatedTime(date) {
     return date.toLocaleTimeString("de-DE");
 }
 
+
+/**
+ * Build a tolltip on given datapoint
+ */
+/**
+ * 
+ * @param data chart data
+ * @param x datapoint on svg
+ * @param y datapoint on svg
+ * @param svg chart
+ * @param temperature tooltip content
+ */
 function makeTooltip(data, x, y, svg, temperature = true) {
 
     // Circle size is size to 
     const circleSize = 1.5;
-    const circleHoverRadius = 5;
-    const circleSizeHover = 7;
+    const circleHoverRadius = 6;
+    const circleSizeHover = 3;
     const circleColor = "#FFFFFF"
 
     function getTooltipHTML(d) {
@@ -44,7 +63,7 @@ function makeTooltip(data, x, y, svg, temperature = true) {
             return x(d.date);
         })
         .attr("cy", function (d) {
-            return y(temperature ? d.temperature: d.humidity);
+            return y(temperature ? d.temperature : d.humidity);
         })
         .attr("fill", circleColor);
 
@@ -58,7 +77,7 @@ function makeTooltip(data, x, y, svg, temperature = true) {
             return x(d.date);
         })
         .attr("cy", function (d) {
-            return y(temperature ? d.temperature: d.humidity);
+            return y(temperature ? d.temperature : d.humidity);
         })
         .style("opacity", 0)
         .on('mouseover', function (event, d) {
@@ -84,115 +103,122 @@ function makeTooltip(data, x, y, svg, temperature = true) {
         });
 }
 
-// set the dimensions and margins of the graph
-var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+/**
+ * Draw teperature graph
+ * 
+ * @param data chart data 
+ */
+function createTemperatureGraph(data) {
+    const color = "#D02225";
+
+    // Set x
+    var x = d3.scaleTime()
+    .domain(d3.extent(data, function (d) { return d.date; })) // This is what is written on the Axis
+    .range([0, width]); // This is where the axis is placed
+
+    // Set y
+    var y = d3.scaleLinear()
+    .domain([0, d3.max(data, function (d) { return d.temperature })]) // This is what is written on the Axis
+    .range([height, 0]); // This is where the axis is placed
+
+    // define the line
+    var line = d3.line()
+        .x(function (d) { return x(d.date); })
+        .y(function (d) { return y(d.temperature); });
+
+    // Create SVG then set the range, then insert the graph
+    const svg = createSVG("graph_temperature", "Temperature");
+
+    // LINIE Add the valueline path.
+    svg.append("path")
+        .data([data])
+        .attr("class", "line")
+        .style("stroke", color)
+        .attr("d", line);
+
+    makeTooltip(data, x, y, svg);
 
 
-    function createTemperatureGraph(data) {
-        const color = "#D02225";
-    
-        // set the ranges
-        var x = d3.scaleTime().range([0, width]);
-        var y = d3.scaleLinear().range([height, 0]);
-    
-        // define the line
-        var line = d3.line()
-            .x(function(d) { return x(d.date); })
-            .y(function(d) { console.log(d.temperature); return y(d.temperature); });
-    
-        // Create SVG then set the range, then insert the graph
-        const svg = createSVG("graph_temperature", "Temperature");
-    
-        // Scale the range of the data
-        x.domain(d3.extent(data, function(d) { return d.date; }));
-        y.domain([0, d3.max(data, function(d) { return d.temperature })]);
-    
-    
-        // LINIE Add the valueline path.
-        svg.append("path")
-            .data([data])
-            .attr("class", "line")
-            .style("stroke", color)
-            .attr("d", line);
+    drawAxisAndGrid(x, y, svg, data);
+}
 
-        makeTooltip(data, x, y, svg);
-    
-    
-        drawGraph(x, y, svg, data);
-    }
 
-    function createHumidityGraph(data) {
-        const color = "steelblue";
-    
-        // set the ranges
-        var x = d3.scaleTime().range([0, width]);
-        var y = d3.scaleLinear().range([height, 0]);
-    
-        // define the line
-        var line = d3.line()
-            .x(function(d) { return x(d.date); })
-            .y(function(d) { console.log(d.humidity); return y(d.humidity); });
-    
-        // Create SVG then set the range, then insert the graph
-        const svg = createSVG("graph_humidity", "Humidity");
-    
-        // Scale the range of the data
-        x.domain(d3.extent(data, function(d) { return d.date; }));
-        y.domain([0, d3.max(data, function(d) { return d.humidity })]);
-    
-    
-        // LINIE Add the valueline path.
-        svg.append("path")
-            .data([data])
-            .attr("class", "line")
-            .style("stroke", color)
-            .attr("d", line);
-    
-    
-            console.log(data, x, y);
-        makeTooltip(data, x, y, svg, false);
+/**
+ * Draw humidity graph
+ * 
+ * @param data chart data 
+ */
+function createHumidityGraph(data) {
+    const color = "steelblue";
 
-        drawGraph(x, y, svg, data);
-    }
+    // set the  ranges
+    var x = d3.scaleTime()
+        .domain(d3.extent(data, function (d) { return d.date; })) // This is what is written on the Axis
+        .range([0, width]); // This is where the axis is placed
+
+    var y = d3.scaleLinear()
+        .domain([0, 100]) // This is what is written on the Axis
+        .range([height, 0]); // This is where the axis is placed
+
+    // define the line
+    var line = d3.line()
+        .x(function (d) { return x(d.date); })
+        .y(function (d) { return y(d.humidity); });
+
+    // Create SVG then set the range, then insert the graph
+    const svg = createSVG("graph_humidity", "Humidity");
+
+
+
+    // LINIE Add the valueline path.
+    svg.append("path")
+        .data([data])
+        .attr("class", "line")
+        .style("stroke", color)
+        .attr("d", line);
+
+
+    makeTooltip(data, x, y, svg, false);
+
+    drawAxisAndGrid(x, y, svg, data);
+}
 
 // append the svg obgect to the body of the page
 // appends a 'group' element to 'svg'
 // moves the 'group' element to the top left margin
 function createSVG(id, title) {
     const _refCharts = d3.select("#charts").append('div').attr("class", 'chart');
-    
+
     if (title) {
         _refCharts.append("h1").attr("class", 'chart-h1').text(title);
     }
     return _refCharts.append("svg")
         .attr("id", id)
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+        .attr("viewBox", `0 0 960 500`)
         .append("g")
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 }
 
-function drawGraph(xAxis, yAxis, svg, data) {
+function drawAxisAndGrid(xAxis, yAxis, svg, data) {
 
     addGrid(width, height, svg);
 
-    // Add the x Axis
+    // Draw the x Axis
     svg.append("g")
         .attr("transform", "translate(0," + height + ")")
+        .style("font-size", X_LABEL_FONT_SIZE)
         .call(d3.axisBottom(xAxis));
 
-    // Add the y Axis
+    // Draw the y Axis
     svg.append("g")
+        .style("font-size", Y_LABEL_FONT_SIZE)
         .call(d3.axisLeft(yAxis));
 }
 
 
-//Read the data
-d3.csv(data_file_path, function(d) {
-    console.log(d);
+//Read the data from file
+d3.csv(data_file_path, function (d) {
     return {
         date: new Date(d.date),
         // diskUsage: +d.disk_usage,
@@ -202,9 +228,7 @@ d3.csv(data_file_path, function(d) {
         temperature: +d.dht11_temperature,
         humidity: +d.dht11_humidity
     };
-}).then(function(data) {
-    console.log(data);
-     
+}).then(function (data) {
     createTemperatureGraph(data);
     createHumidityGraph(data);
 });

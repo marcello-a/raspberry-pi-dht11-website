@@ -107,7 +107,7 @@ hr {
   }
 
   .chart {
-    margin: 0 auto 3rem;
+    margin: 0 5rem 3rem;
     padding: 1.5rem;
 
     background-color: var(--beige);
@@ -115,6 +115,13 @@ hr {
     -webkit-box-shadow: 0px 0px 21px -1px var(--beige); 
     box-shadow: 0px 0px 21px -1px var(--beige);
 
+  }
+
+  @media screen and (max-width: 992px) {
+    .chart {
+    margin: 0 .5rem .3rem;
+    }
+    
   }
 
 .chart-h1 {
