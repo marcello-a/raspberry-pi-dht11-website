@@ -1,5 +1,11 @@
 # Website (D3.js) for Raspberry Pi temperature and humidity (DHT11)
 
+Small project on a raspberry pi
+- to collect temperature and humidity data via DHT 11 sensor
+- run webserver (ngnix) on raspberry pi
+- publish a local website to show data as graph (d3.js)
+
+![Website Screenshot](/images/website-screenshot.png "Website Screenshot")
 
 # Setup hardware
 
