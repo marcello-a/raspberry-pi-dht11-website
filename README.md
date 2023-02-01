@@ -188,8 +188,8 @@ Go to `/var/www/html/` and edit everything you want. You have to use sudo!
 > 💡 CSV-file must be in the same folder!
 > CSV-file must be (`sudo chmod +x name-of-csv-file.csv`)
 
-You can find the HTML-file [here](index.html)
-And the JS-files [here (index.js)](js/index.js) and [here (grid.js)](js/grid.js)
+You can find the HTML-file [here](website/index.html)
+And the JS-files [here (index.js)](website/js/index.js) and [here (grid.js)](website/js/grid.js)
 
 
 ## Example CSV
