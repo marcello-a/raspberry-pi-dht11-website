@@ -1,14 +1,7 @@
 # Website (D3.js) for Raspberry Pi temperature and humidity (DHT11)
 
-# Table of contents
-1. [Setup hardware](#setupHardware)
-2. [Install AdafruitDHT Library](#installAdafruit)
-    1. [Sub paragraph](#subparagraph1)
-3. [Another paragraph](#paragraph2)
 
-
-
-# Setup hardware <a name="setupHardware"></a>
+# Setup hardware
 
 ```
 # DHT-11
@@ -22,7 +15,7 @@
 ![Connect DHT-11 on the Board to R-PI (GPIO)](/images/Connect_DHT-11_to_R-PI.png "Connect DHT-11 on the Board to R-PI (GPIO)")
 
 
-# Install AdafruitDHT Library <a name="installAdafruit"></a>
+# Install AdafruitDHT Library
 ## Adafruit Python DHT Sensor Library
 Do some preperation
 ```bash
