@@ -31,7 +31,7 @@ function getFormatedTime(date) {
 
 
 /**
- * Build a tolltip on given datapoint
+ * Build a tooltip on given datapoint
  */
 /**
  * 
