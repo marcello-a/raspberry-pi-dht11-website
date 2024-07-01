@@ -1,12 +1,3 @@
-/**
-* TIPPS & TRICKS
-*
-* - Use always min-/max- for width and height. Saves you from lots of problems
-* - Choose colors and fonts first
-* - Develop for Mobile first!
-* - Bring more complexity with media query's for lager devices. -> Use "em" for media queries!
-*/
-
 :root {
     --grey: #696D7D;
     --blue-green: #6F9283;
